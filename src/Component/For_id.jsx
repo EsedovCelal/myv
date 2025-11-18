@@ -23,12 +23,10 @@ const For_id = () => {
     };
     fetch_for_id();
   }, [id]);
-
-  console.log("for_id" + id_data);
   return (
     <div>
       <p>{id_data.name}</p>
-      <p>{id_data.description}</p>
+      <p>{id_data.deck}</p>
       {loading && <p>Loading...</p>}
     </div>
   );

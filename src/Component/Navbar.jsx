@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import temp from "../images/temp_logo.jpg";
 import { Link } from "@mui/material";
+import { X, ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   const [inputItem, setInputItem] = useState(null);
@@ -10,6 +11,29 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [isOpenOptions, setIsOpenOptions] = useState(false);
+  const [tags, setTags] = useState([]);
+  const options = [
+    "game",
+    "franchise",
+    "character",
+    "concept",
+    "object",
+    "location",
+    "person",
+    "company",
+    "video",
+  ];
+
+  const addTag = (option) => {
+    if (!tags.includes(option)) {
+      setTags([...tags, option]);
+    }
+    setIsOpenOptions(false);
+  };
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   useEffect(() => {
     if (!inputItem) return;
@@ -17,22 +41,26 @@ const Navbar = () => {
       handleSearch();
     }, 600);
     return () => clearTimeout(delayDebounce);
-  }, [inputItem]);
+  }, [inputItem, tags]);
 
   const handleSearch = async () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://localhost:3000/api/search?query=${inputItem}`
+        `http://localhost:3000/api/search?query=${inputItem}&resources=${tags.join(
+          ","
+        )}`
       );
       const data = await res.json();
       setLoading(false);
+      console.log(data.results);
       setExternalData(data.results);
     } catch (error) {
-      setError(error.massage);
+      setError(error.message);
+      console.error("Error:", error);
     }
   };
-  console.log("Navbar" + externalData);
+  console.log(tags);
   return (
     <div className="flex justify-center">
       <div
@@ -41,10 +69,62 @@ const Navbar = () => {
         }`}
       >
         <div className="h-20 flex items-center">
-          <Link href="/" className="text-2xl">
+          <Link href="/" className="text-2xl" underline="none" color="white">
             myv.
           </Link>
+          <div className="ml-2">
+            <button
+              onClick={() => setIsOpenOptions(!isOpenOptions)}
+              className="w-32 h-9 flex items-center justify-between border-gray-300 rounded-lg transition-colors bg-white"
+            >
+              <span className="text-gray-700">Select options</span>
+              <ChevronDown
+                size={20}
+                className={`text-gray-400 transition-transform ${
+                  isOpenOptions ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {/* Dropdown Options */}
+            {isOpenOptions && (
+              <div className="absolute w-50 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                {options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => addTag(option)}
+                    disabled={tags.includes(option)}
+                    className={`w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                      tags.includes(option)
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    {option}
+                    {tags.includes(option) && (
+                      <span className="ml-2 text-xs text-gray-500">
+                        ✓ Selected
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="relative flex items-center justify-end w-full">
+            {tags.map((tag, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center gap-1 text-white px-3 py-1 rounded-full text-sm relative"
+              >
+                {tag}
+                <button
+                  onClick={() => removeTag(tag)}
+                  className="hover:bg-amber-600 rounded-full p-0.5 transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </span>
+            ))}
             <svg
               viewBox="0 0 24 24"
               fill="grey"
@@ -68,10 +148,20 @@ const Navbar = () => {
               /*     onBlur={() => setIsFocused(false)} */
             />
             <div className="w-50">
-              <Link href="/log_in" className="pl-5">
+              <Link
+                href="/log_in"
+                className="pl-5"
+                underline="none"
+                color="white"
+              >
                 Log in
               </Link>
-              <Link href="sign_up" className="pl-5">
+              <Link
+                href="sign_up"
+                className="pl-5"
+                underline="none"
+                color="white"
+              >
                 Sign Up
               </Link>
             </div>
@@ -80,8 +170,13 @@ const Navbar = () => {
         <div className={`${!isFocused && "hidden"}`}>
           {loading && <p>Loading...</p>}
           {externalData.map((item, index) => (
-            <Link href={`${item.id}`} key={index}>
-              <div className={`flex gap-3`}>
+            <Link
+              href={`${item.id}`}
+              key={index}
+              underline="none"
+              color="white"
+            >
+              <div className={`flex gap-3 bg-stone-800 mb-2`}>
                 <div className="pb-1 pointer-events-none">
                   <img
                     className="h-full w-20 rounded-lg "

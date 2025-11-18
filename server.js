@@ -17,9 +17,10 @@ app.use((req, res, next) => {
 app.get("/api/search", async (req, res) => {
   try {
     const query = req.query.query || "";
+    const resources = req.query.resources;
     const externalUrl = `https://www.giantbomb.com/api/search/?api_key=${apiKey}&format=json&query=${encodeURIComponent(
       query
-    )}`;
+    )}&resources=${encodeURIComponent(resources)}`;
     const response = await axios.get(externalUrl, {
       headers: { "User-Agent": "MyGameApp/1.0" },
     });
