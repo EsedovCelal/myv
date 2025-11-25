@@ -30,10 +30,12 @@ app.get("/api/search", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch external data" });
   }
 });
-app.get("/api/character/:id", async (req, res) => {
+app.get("/api/:options/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const externalUrl = `https://www.giantbomb.com/api/character/${id}/?api_key=${apiKey}&format=json`;
+    const options = req.params.options;
+    console.log("options", options);
+    const externalUrl = `https://www.giantbomb.com/api/${options}/${id}/?api_key=${apiKey}&format=json`;
     const response = await axios.get(externalUrl, {
       headers: { "User-Agent": "MyGameApp/1.0" },
     });

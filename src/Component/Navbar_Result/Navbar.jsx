@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
-import temp from "../images/temp_logo.jpg";
 import { Link } from "@mui/material";
 import { X, ChevronDown } from "lucide-react";
 
-const Navbar = () => {
+const Navbar = ({ setResult, setFocused }) => {
   const [inputItem, setInputItem] = useState(null);
-  const [externalData, setExternalData] = useState([
-    { image: { icon_url: { temp } }, name: "test" },
-  ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -42,7 +38,6 @@ const Navbar = () => {
     }, 600);
     return () => clearTimeout(delayDebounce);
   }, [inputItem, tags]);
-
   const handleSearch = async () => {
     try {
       setLoading(true);
@@ -53,14 +48,13 @@ const Navbar = () => {
       );
       const data = await res.json();
       setLoading(false);
-      console.log(data.results);
-      setExternalData(data.results);
+      setResult(data.results);
     } catch (error) {
       setError(error.message);
       console.error("Error:", error);
     }
+    setFocused(isFocused);
   };
-  console.log(tags);
   return (
     <div className="flex justify-center">
       <div
@@ -85,7 +79,6 @@ const Navbar = () => {
                 }`}
               />
             </button>
-            {/* Dropdown Options */}
             {isOpenOptions && (
               <div className="absolute w-50 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
                 {options.map((option) => (
@@ -114,14 +107,14 @@ const Navbar = () => {
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-1 text-white px-3 py-1 rounded-full text-sm relative"
+                className="inline-flex items-center gap-1 text-white px-1 py-1 text-sm relative"
               >
                 {tag}
                 <button
                   onClick={() => removeTag(tag)}
-                  className="hover:bg-amber-600 rounded-full p-0.5 transition-colors"
+                  className="hover:bg-amber-600 rounded-full transition-colors"
                 >
-                  <X size={16} />
+                  <X size={12} />
                 </button>
               </span>
             ))}
@@ -145,51 +138,27 @@ const Navbar = () => {
               } border-gray-300 transition-all duration-300 ease-in-out h-9 bg-[white] text-[black] rounded-lg pl-7 outline-0`}
               placeholder="Search you game"
               onFocus={() => setIsFocused(true)}
-              /*     onBlur={() => setIsFocused(false)} */
+              onBlur={() => setIsFocused(false)}
             />
-            <div className="w-50">
-              <Link
-                href="/log_in"
-                className="pl-5"
-                underline="none"
-                color="white"
-              >
-                Log in
-              </Link>
-              <Link
-                href="sign_up"
-                className="pl-5"
-                underline="none"
-                color="white"
-              >
-                Sign Up
-              </Link>
-            </div>
           </div>
-        </div>
-        <div className={`${!isFocused && "hidden"}`}>
-          {loading && <p>Loading...</p>}
-          {externalData.map((item, index) => (
+          <div className="w-50">
             <Link
-              href={`${item.id}`}
-              key={index}
+              href="/log_in"
+              className="pl-5"
               underline="none"
               color="white"
             >
-              <div className={`flex gap-3 bg-stone-800 mb-2`}>
-                <div className="pb-1 pointer-events-none">
-                  <img
-                    className="h-full w-20 rounded-lg "
-                    src={item.image.icon_url}
-                  />
-                </div>
-                <div>
-                  <h1>{item.name}</h1>
-                  <p>{item.deck}</p>
-                </div>
-              </div>
+              Log in
             </Link>
-          ))}
+            <Link
+              href="sign_up"
+              className="pl-5"
+              underline="none"
+              color="white"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       </div>
     </div>
