@@ -48,6 +48,7 @@ const Navbar = ({ setResult, setFocused }) => {
       );
       const data = await res.json();
       setLoading(false);
+      console.log(data.results);
       setResult(data.results);
     } catch (error) {
       setError(error.message);
@@ -64,7 +65,7 @@ const Navbar = ({ setResult, setFocused }) => {
       >
         <div className="h-20 flex items-center">
           <Link href="/" className="text-2xl" underline="none" color="white">
-            myv.
+            myGs.
           </Link>
           <div className="ml-2">
             <button
@@ -107,7 +108,7 @@ const Navbar = ({ setResult, setFocused }) => {
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-1 text-white px-1 py-1 text-sm relative"
+                className="inline-flex items-center gap-1 text-white px-1 py-1 text-sm border border-[grey] ml-1"
               >
                 {tag}
                 <button
@@ -165,6 +166,3 @@ const Navbar = ({ setResult, setFocused }) => {
   );
 };
 export default Navbar;
-//478dc71d037549c58732b720314df28d gamebrain api key
-//382f90b0 omdb api key
-//08eef91c5a865641cc85ae7b771d4002f78ef3cb gaint bomb api key

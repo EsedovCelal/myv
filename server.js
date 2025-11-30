@@ -49,3 +49,7 @@ app.get("/api/:options/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+//478dc71d037549c58732b720314df28d gamebrain api key
+//382f90b0 omdb api key
+//08eef91c5a865641cc85ae7b771d4002f78ef3cb gaint bomb api key
